@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login - Wemarket</title>
+    <link rel="stylesheet" href="/public/style.css" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .auth-container {
+        background: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        width: 300px;
+      }
+
+      input, button {
+        display: block;
+        width: 100%;
+        margin-bottom: 15px;
+        padding: 10px;
+        font-size: 1em;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      button {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      p a {
+        font-size: 0.9em;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="auth-container">
+      <h2>Login</h2>
+      <form id="loginForm">
+        <input type="email" id="email" placeholder="Email" required />
+        <input type="password" id="password" placeholder="Password" required />
+        <button type="submit">Login</button>
+      </form>
+      <p><a href="/views/reset-password.html">Forgot Password?</a></p>
+    </div>
+
+    <script>
+      const form = document.getElementById('loginForm');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        try {
+          const res = await fetch('http://localhost:4000/api/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ email, password })
+          });
+
+          const data = await res.json();
+
+          if (res.ok) {
+            alert(data.message || 'Login successful!');
+            // Optionally redirect:
+            // window.location.href = '/dashboard.html';
+          } else {
+            alert(data.error || 'Login failed.');
+          }
+        } catch (err) {
+          console.error(err);
+          alert('Something went wrong. Please try again later.');
+        }
+      });
+    </script>
+  </body>
+</html>
