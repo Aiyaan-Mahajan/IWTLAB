@@ -160,28 +160,86 @@ nav ul li a:hover {
 }
 
 /* Service Cards */
+/* Services Grid: 4 columns on large, responsive on smaller screens */
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 30px;
 }
 
+/* Service Card */
 .service {
-  background: #fff;
   padding: 30px;
-  border-radius: 10px;
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease;
+  border-radius: 12px;
+  color: #fff;
+  transition: transform 0.4s ease, box-shadow 0.4s ease, filter 0.4s ease;
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transform-origin: center center;
 }
 
+/* Enlarged and glowing on hover */
 .service:hover {
-  transform: translateY(-5px);
+  transform: scale(1.08);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.25);
+  filter: brightness(1.1);
 }
 
-.service h3 {
-  color: #007bff;
-  margin-bottom: 10px;
+/* Colorful cards */
+.service:nth-child(1) {
+  background: linear-gradient(135deg, #667eea, #764ba2); /* Blue-purple */
 }
+
+.service:nth-child(2) {
+  background: linear-gradient(135deg, #ff6a00, #ee0979); /* Orange-pink */
+}
+
+.service:nth-child(3) {
+  background: linear-gradient(135deg, #00c9ff, #92fe9d); /* Aqua-green */
+}
+
+.service:nth-child(4) {
+  background: linear-gradient(135deg, #f7971e, #ffd200); /* Yellow-orange */
+}
+
+/* Heading inside services */
+.service h3 {
+  margin-bottom: 10px;
+  font-size: 1.6em;
+  color: #fff;
+}
+
+
+/* Hover effect */
+.service:hover {
+  transform: translateY(-10px) scale(1.05);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* Colorful cards */
+.service:nth-child(1) {
+  background: linear-gradient(135deg, #667eea, #764ba2); /* Blue-purple */
+}
+
+.service:nth-child(2) {
+  background: linear-gradient(135deg, #ff6a00, #ee0979); /* Orange-pink */
+}
+
+.service:nth-child(3) {
+  background: linear-gradient(135deg, #00c9ff, #92fe9d); /* Aqua-green */
+}
+
+.service:nth-child(4) {
+  background: linear-gradient(135deg, #f7971e, #ffd200); /* Yellow-orange */
+}
+
+
+/* Hover effect: pop out */
+.service:hover {
+  transform: translateY(-10px) scale(1.05);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+}
+
 
 /* Portfolio Grid */
 .portfolio-grid {
@@ -326,4 +384,47 @@ footer {
     margin: 40px 20px;
     padding: 20px;
   }
+}
+
+
+
+
+
+
+@keyframes zoomInUp {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Animate each service when it appears */
+.service {
+  opacity: 0;
+  animation: zoomInUp 0.8s ease forwards;
+}
+
+/* Staggered entry animation using nth-child delays */
+.service:nth-child(1) {
+  animation-delay: 0.1s;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+}
+
+.service:nth-child(2) {
+  animation-delay: 0.3s;
+  background: linear-gradient(135deg, #ff6a00, #ee0979);
+}
+
+.service:nth-child(3) {
+  animation-delay: 0.5s;
+  background: linear-gradient(135deg, #00c9ff, #92fe9d);
+}
+
+.service:nth-child(4) {
+  animation-delay: 0.7s;
+  background: linear-gradient(135deg, #f7971e, #ffd200);
 }
