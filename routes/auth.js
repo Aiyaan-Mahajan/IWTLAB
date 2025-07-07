@@ -1,6 +1,5 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
-const crypto = require('crypto');
 const nodemailer = require('nodemailer');
 const User = require("../models/User");
 const OTPToken = require('../models/OTPToken');
@@ -13,10 +12,9 @@ router.post('/signup', async (req, res) => {
 
         console.log("🔔 Incoming register request:", req.body);
 
-        const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new User({ name, email, password: hashedPassword });
-
+        const newUser = new User({ name, email, password }); // No need to hash manually
         const savedUser = await newUser.save();
+
         console.log("✅ User saved:", savedUser);
 
         res.status(201).json({ message: "User registered successfully." });
@@ -36,7 +34,7 @@ router.post('/login', async (req, res) => {
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch)
-            return res.status(401).json({ message: 'Invalid credentials.' });
+            return res.status(401).json({ message: 'Invalid auth.' });
 
         res.json({ message: 'Login successful!' });
     } catch (err) {

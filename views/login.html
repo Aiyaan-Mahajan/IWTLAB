@@ -80,12 +80,12 @@
 
           const data = await res.json();
 
+          console.log(res);
+
           if (res.ok) {
             alert(data.message || 'Login successful!');
-            // Optionally redirect:
-            // window.location.href = '/dashboard.html';
           } else {
-            alert(data.error || 'Login failed.');
+            alert(data.message || 'Login failed.');
           }
         } catch (err) {
           console.error(err);

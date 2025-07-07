@@ -1,113 +1,57 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const nodemailer = require('nodemailer');
-const bodyParser = require('body-parser');
-const User = require('./models/User');
-const OTPToken = require('./models/OTPToken');
+document
+  .getElementById("contactForm")
+  .addEventListener("submit", async function (e) {
+    e.preventDefault();
 
-const app = express();
-const PORT = 4000;
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const message = document.getElementById("message").value.trim();
 
-app.use(cors());
-app.use(bodyParser.json());
+    const responseMessage = document.getElementById("responseMessage");
+    responseMessage.innerText = "";
 
-mongoose.connect('mongodb://localhost:27017/wemarket_auth', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+    if (name.length < 3 || name.length > 50) {
+      responseMessage.style.color = "red";
+      responseMessage.innerText = "Name must be between 3 and 50 characters.";
+      return;
+    }
 
-mongoose.connection.once('open', () => {
-  console.log('Connected to MongoDB');
-});
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      responseMessage.style.color = "red";
+      responseMessage.innerText = "Please enter a valid email address.";
+      return;
+    }
 
-const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST,      
-  port: process.env.EMAIL_PORT,    
-  secure: false,                   
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  }
-});
+    if (message.length < 10 || message.length > 1000) {
+      responseMessage.style.color = "red";
+      responseMessage.innerText =
+        "Message must be between 10 and 1000 characters.";
+      return;
+    }
 
-// Routes
-app.post('/api/contact', async (req, res) => {
-  const { name, email, message } = req.body;
-  try {
-    if (!name || !email || !message)
-      return res.status(400).json({ message: 'All fields required' });
+    try {
+      const response = await fetch("http://localhost:4000/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name, email, message }),
+      });
 
-    return res.status(200).json({ message: 'Message received!' });
-  } catch (err) {
-    return res.status(500).json({ message: 'Server error' });
-  }
-});
+      const data = await response.json();
 
-app.post('/api/signup', async (req, res) => {
-  const { name, email, password } = req.body;
-  try {
-    const existingUser = await User.findOne({ email });
-    if (existingUser)
-      return res.status(400).json({ message: 'Email already registered' });
-
-    const user = new User({ name, email, password });
-    await user.save();
-    res.status(200).json({ message: 'Signup successful' });
-  } catch (err) {
-    res.status(500).json({ message: 'Signup error' });
-  }
-});
-
-app.post('/api/login', async (req, res) => {
-  const { email, password } = req.body;
-  try {
-    const user = await User.findOne({ email });
-    if (!user || user.password !== password)
-      return res.status(401).json({ message: 'Invalid credentials' });
-
-    res.status(200).json({ message: 'Login successful' });
-  } catch (err) {
-    res.status(500).json({ message: 'Login error' });
-  }
-});
-
-app.post('/api/send-otp', async (req, res) => {
-  const { email } = req.body;
-  const otp = Math.floor(100000 + Math.random() * 900000);
-  try {
-    await OTPToken.deleteMany({ email });
-    const token = new OTPToken({ email, otp });
-    await token.save();
-
-    await transporter.sendMail({
-      from: process.env.EMAIL_FROM,
-      to: email,
-      subject: 'Your OTP Code',
-      text: `Your OTP is ${otp}. It is valid for 5 minutes.`
-    });
-
-    res.status(200).json({ message: 'OTP sent' });
-  } catch (err) {
-    res.status(500).json({ message: 'Failed to send OTP' });
-  }
-});
-
-app.post('/api/verify-otp', async (req, res) => {
-  const { email, otp, newPassword } = req.body;
-  try {
-    const token = await OTPToken.findOne({ email, otp });
-    if (!token) return res.status(400).json({ message: 'Invalid OTP' });
-
-    await User.findOneAndUpdate({ email }, { password: newPassword });
-    await OTPToken.deleteMany({ email });
-
-    res.status(200).json({ message: 'Password reset successfully' });
-  } catch (err) {
-    res.status(500).json({ message: 'Failed to reset password' });
-  }
-});
-
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+      if (response.ok) {
+        responseMessage.style.color = "green";
+        responseMessage.innerText = data.message;
+        document.getElementById("contactForm").reset(); // Clear form
+      } else {
+        responseMessage.style.color = "red";
+        responseMessage.innerText =
+          data.message || "Something went wrong!";
+      }
+    } catch (err) {
+      responseMessage.style.color = "red";
+      responseMessage.innerText = "Server error. Please try again later.";
+    }
+  });
