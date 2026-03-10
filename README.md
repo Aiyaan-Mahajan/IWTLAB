@@ -145,11 +145,11 @@ curl -X POST http://localhost:4000/api/request-otp \
 ## 📫 Contact
 
 Developed by **Sahil Madaan**
-Feel free to reach out via email: [sahilmadaan.email@gmail.com](mailto:sahilmadaan.email@gmail.com)
+Feel free to reach out via email:
 
 ---
 
 ```
 
-Let me know if you'd like a **frontend README**, a deployment guide (e.g., for Vercel/Render/Heroku), or if you want to push this to GitHub and need help writing a `.gitignore` or `.env.example`.
+
 ```
