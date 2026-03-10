@@ -142,12 +142,6 @@ curl -X POST http://localhost:4000/api/request-otp \
 
 ---
 
-## 📫 Contact
-
-Developed by **Sahil Madaan**
-Feel free to reach out via email:
-
----
 
 ```
 
